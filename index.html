@@ -6,6 +6,7 @@
 <title>A Little Adventure for Momo Smiles</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap">
+<link rel="preload" as="image" href="couple.jpg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -42,7 +43,7 @@
         <button data-k="right" aria-label="Move right">▶</button>
       </div>
       <div class="abtns">
-        <button data-k="enter" class="b-enter" aria-label="Enter tunnel">▼ ENTER</button>
+        <button data-k="enter" class="b-enter" aria-label="Enter castle">▼ ENTER</button>
         <button data-k="jump" class="b-jump" aria-label="Jump">▲ JUMP</button>
       </div>
     </div>
@@ -60,10 +61,10 @@
     </div>
   </section>
 
-  <!-- 5. FINAL SURPRISE -->
+  <!-- 5. FINAL SURPRISE (animated photo) -->
   <section id="scene-finale" class="scene">
     <div class="finale-wrap">
-      <canvas id="finaleCanvas" width="200" height="112"></canvas>
+      <canvas id="finaleCanvas" width="1000" height="1000"></canvas>
       <div id="finaleText" class="final-text">
         <p id="finMission" class="f-mission"></p>
         <p id="finLove" class="f-love"></p>
@@ -74,11 +75,11 @@
 
 </main>
 
-<!-- 3. TUNNEL TRANSITION -->
+<!-- 3. CASTLE DOOR TRANSITION -->
 <div id="dark">
   <div id="darkFx" class="layer"></div>
   <div class="orb"></div>
-  <p id="darkText">✦ somewhere beyond the tunnel… ✦</p>
+  <p id="darkText">✦ somewhere beyond the castle door… ✦</p>
 </div>
 
 <script src="letter.js"></script>
