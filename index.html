@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>A Little Adventure for Momo Smiles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="fx" class="layer"></div>
+
+<main id="app">
+
+  <!-- 1 + 2. GAME -->
+  <section id="scene-game" class="scene active">
+    <div class="frame">
+      <canvas id="gameCanvas" width="400" height="225"></canvas>
+
+      <div class="hud">
+        <div>SCORE <span id="score">00000</span></div>
+        <div class="hud-hearts">♥ <span id="hearts">0</span>/<span id="heartsTotal">5</span></div>
+        <button id="muteBtn" aria-label="Toggle sound">♪</button>
+      </div>
+
+      <div id="hint" class="hint"></div>
+
+      <div id="startOverlay" class="overlay">
+        <p class="tiny">♥ a game for ♥</p>
+        <h1>A Little Adventure<br>for Momo Smiles</h1>
+        <p class="tiny">made by Bigduggmustfall</p>
+        <button id="startBtn" class="btn-px blink">▶ START</button>
+        <p class="tiny keys">← → move &nbsp;·&nbsp; ↑ / SPACE jump</p>
+      </div>
+    </div>
+
+    <div class="pad" id="pad">
+      <div class="dpad">
+        <button data-k="left" aria-label="Move left">◀</button>
+        <button data-k="right" aria-label="Move right">▶</button>
+      </div>
+      <div class="abtns">
+        <button data-k="enter" class="b-enter" aria-label="Enter tunnel">▼ ENTER</button>
+        <button data-k="jump" class="b-jump" aria-label="Jump">▲ JUMP</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. LOVE LETTER -->
+  <section id="scene-letter" class="scene">
+    <div class="win">
+      <div class="win-title">
+        <span id="letterTitle"></span>
+        <div class="win-btns"><b>_</b><b>□</b><b>×</b></div>
+      </div>
+      <div class="win-menu">File &nbsp; Edit &nbsp; View &nbsp; Love ♥</div>
+      <div class="win-body" id="letterBody"></div>
+    </div>
+  </section>
+
+  <!-- 5. FINAL SURPRISE -->
+  <section id="scene-finale" class="scene">
+    <div class="finale-wrap">
+      <canvas id="finaleCanvas" width="200" height="112"></canvas>
+      <div id="finaleText" class="final-text">
+        <p id="finMission" class="f-mission"></p>
+        <p id="finLove" class="f-love"></p>
+        <button id="replayBtn" class="btn-px"></button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- 3. TUNNEL TRANSITION -->
+<div id="dark">
+  <div id="darkFx" class="layer"></div>
+  <div class="orb"></div>
+  <p id="darkText">✦ somewhere beyond the tunnel… ✦</p>
+</div>
+
+<script src="letter.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
