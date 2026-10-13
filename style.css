@@ -1,0 +1,173 @@
+:root{
+  --pink:#ff7eb6; --pink-d:#e04c92; --pink-l:#ffd6e9; --ink:#4a1d3a;
+  --px:'Press Start 2P', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'VT323',monospace;color:#fff}
+body{background:radial-gradient(ellipse at 50% 30%,#3a1d5c 0%,#150a26 75%)}
+
+.layer{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+#fx{position:fixed;z-index:1}
+#app{position:fixed;inset:0;z-index:2}
+
+/* ---------- scenes ---------- */
+.scene{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:10px;
+  opacity:0;visibility:hidden;transition:opacity .8s ease,visibility 0s .8s;
+  overflow-y:auto;
+}
+.scene.active{opacity:1;visibility:visible;transition:opacity .8s ease}
+
+/* ---------- buttons ---------- */
+.btn-px{
+  font-family:var(--px);font-size:clamp(9px,2.6vw,14px);line-height:1.4;
+  padding:.9em 1.4em;background:var(--pink);color:#fff;border:0;cursor:pointer;
+  box-shadow:0 4px 0 var(--pink-d),inset 0 0 0 3px rgba(255,255,255,.55);
+  text-shadow:1px 1px 0 var(--pink-d);
+}
+.btn-px:active{transform:translateY(3px);box-shadow:0 1px 0 var(--pink-d),inset 0 0 0 3px rgba(255,255,255,.55)}
+.blink{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{filter:brightness(1.25)}}
+
+/* ---------- game frame ---------- */
+.frame{
+  position:relative;
+  width:min(100vw,calc((100vh - 170px) * 16 / 9));
+  width:min(100vw,calc((100dvh - 170px) * 16 / 9));
+  aspect-ratio:16/9;
+  border:4px solid #fff;box-shadow:0 0 0 4px var(--pink-d),0 0 40px rgba(255,126,182,.5);
+  background:#5db8ff;overflow:hidden;flex:none;
+}
+#gameCanvas,#finaleCanvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+
+.hud{
+  position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;
+  padding:6px 8px;font-family:var(--px);font-size:clamp(6px,1.9vw,11px);
+  text-shadow:2px 2px 0 rgba(0,0,0,.45);pointer-events:none;
+}
+.hud-hearts{color:#ffd0e6}
+#muteBtn{pointer-events:auto;font-family:var(--px);font-size:inherit;background:rgba(0,0,0,.25);color:#fff;border:2px solid #fff;padding:2px 6px;cursor:pointer}
+
+.hint{
+  position:absolute;top:13%;left:50%;transform:translate(-50%,-6px);max-width:92%;
+  background:rgba(255,255,255,.94);color:var(--ink);border:3px solid var(--pink);
+  font-family:var(--px);font-size:clamp(6px,1.9vw,10px);line-height:1.6;text-align:center;
+  padding:.6em .9em;opacity:0;transition:opacity .4s,transform .4s;pointer-events:none;
+}
+.hint.show{opacity:1;transform:translate(-50%,0)}
+
+.overlay{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(6px,2.2vw,14px);text-align:center;padding:8px;
+  background:linear-gradient(rgba(30,10,60,.55),rgba(30,10,60,.35));
+  transition:opacity .5s;
+}
+.overlay.hide{opacity:0;pointer-events:none}
+.overlay h1{
+  font-family:var(--px);font-weight:400;font-size:clamp(10px,3.6vw,24px);line-height:1.6;color:#fff;
+  text-shadow:3px 3px 0 var(--pink-d),0 0 18px rgba(255,126,182,.9);
+}
+.tiny{font-family:var(--px);font-size:clamp(6px,1.6vw,9px);color:var(--pink-l);line-height:1.6}
+
+/* ---------- touch / on-screen pad ---------- */
+.pad{
+  width:min(100vw,560px);display:flex;justify-content:space-between;align-items:center;
+  padding:0 14px;flex:none;touch-action:none;user-select:none;-webkit-user-select:none;
+}
+.dpad,.abtns{display:flex;gap:12px}
+.pad button{
+  touch-action:none;font-family:var(--px);font-size:13px;color:#fff;background:rgba(255,126,182,.9);
+  border:3px solid #fff;min-width:64px;height:58px;padding:0 12px;cursor:pointer;
+  box-shadow:0 4px 0 var(--pink-d);user-select:none;-webkit-user-select:none;
+}
+.pad button.down{transform:translateY(3px);box-shadow:0 1px 0 var(--pink-d);background:var(--pink-d)}
+.pad .b-enter{background:rgba(120,90,200,.95);box-shadow:0 4px 0 #4a3590;font-size:11px}
+@media (max-height:520px){
+  .frame{width:min(100vw,calc(100vh * 16 / 9));width:min(100vw,calc(100dvh * 16 / 9))}
+  .pad{position:absolute;left:50%;transform:translateX(-50%);bottom:8px;width:100%;pointer-events:none}
+  .pad button{pointer-events:auto;opacity:.8;height:46px;min-width:52px}
+  .scene{gap:0}
+}
+
+/* ---------- floating hearts ---------- */
+.float-heart{
+  position:absolute;bottom:-40px;opacity:0;line-height:1;
+  animation:floatUp linear forwards;text-shadow:0 0 10px currentColor;
+}
+@keyframes floatUp{
+  0%{transform:translate(0,0) scale(.6);opacity:0}
+  12%{opacity:.9}
+  100%{transform:translate(var(--dx),-112vh) scale(1.15);opacity:0}
+}
+
+/* ---------- tunnel transition ---------- */
+#dark{
+  position:fixed;inset:0;z-index:50;background:#000;opacity:0;pointer-events:none;
+  transition:opacity .9s ease;
+}
+#dark.on{opacity:1;pointer-events:auto}
+#dark .orb{
+  position:absolute;left:50%;top:50%;width:120px;height:120px;border-radius:50%;
+  transform:translate(-50%,-50%) scale(0);opacity:0;
+  background:radial-gradient(circle,#fff 0%,#ffd6ea 25%,rgba(255,105,180,.55) 55%,transparent 72%);
+}
+#dark.glow .orb{animation:orb 3.2s ease-in-out forwards}
+@keyframes orb{
+  0%{transform:translate(-50%,-50%) scale(0);opacity:0}
+  25%{opacity:1}
+  60%{transform:translate(-50%,-50%) scale(1.6)}
+  100%{transform:translate(-50%,-50%) scale(5.5);opacity:1}
+}
+#darkText{
+  position:absolute;left:0;right:0;top:68%;text-align:center;font-family:var(--px);
+  font-size:clamp(8px,2.4vw,13px);color:var(--pink-l);opacity:0;transition:opacity 1.2s .6s;
+}
+#dark.glow #darkText{opacity:1}
+
+/* ---------- pink Windows-style window ---------- */
+.win{
+  width:min(92vw,540px);max-height:86vh;max-height:86dvh;display:flex;flex-direction:column;
+  background:#fff0f7;border:3px solid #fff;margin:auto;flex:none;
+  box-shadow:0 0 0 3px var(--pink-d),8px 8px 0 rgba(0,0,0,.35),0 0 50px rgba(255,126,182,.55);
+}
+.scene.active .win{animation:winPop .5s steps(6) both}
+@keyframes winPop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.win-title{
+  background:linear-gradient(90deg,#ff5fa5,#ff9ec9);color:#fff;font-family:var(--px);font-size:10px;
+  padding:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;
+  text-shadow:1px 1px 0 var(--pink-d);
+}
+.win-btns{display:flex}
+.win-btns b{
+  display:inline-grid;place-items:center;width:20px;height:18px;margin-left:4px;background:#ffe3f0;
+  color:var(--pink-d);border:2px outset #fff;font:700 11px Arial,sans-serif;text-shadow:none;
+}
+.win-menu{font-size:19px;color:var(--ink);padding:2px 10px;background:#ffe9f3;border-bottom:2px solid #ffc2dd}
+.win-body{
+  overflow:auto;margin:6px;padding:18px 18px 24px;background:#fff;color:var(--ink);
+  border:2px inset #ffc2dd;font-size:clamp(21px,5.2vw,26px);line-height:1.25;flex:1;
+}
+.win-body .line{white-space:pre-line;margin-bottom:.8em;opacity:0;transform:translateY(8px);
+  animation:lineIn .7s ease forwards;animation-delay:calc(var(--d) * .3s)}
+.win-body .greet{font-size:1.15em;color:var(--pink-d)}
+.win-body .closing{margin-bottom:.1em}
+.win-body .sign{color:var(--pink-d);font-size:1.15em}
+.win-body .more{text-align:center;margin:1.2em 0 0}
+@keyframes lineIn{to{opacity:1;transform:none}}
+
+/* ---------- finale ---------- */
+.finale-wrap{margin:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:12px;flex:none}
+#finaleCanvas{
+  width:min(92vw,560px);height:auto;aspect-ratio:200/112;
+  border:4px solid #fff;box-shadow:0 0 0 4px var(--pink-d),0 0 60px rgba(255,126,182,.55);
+  background:#0b0514;
+}
+.final-text{max-width:min(92vw,560px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.final-text > *{opacity:0;transform:translateY(10px);transition:opacity 1s,transform 1s}
+.final-text.show > *{opacity:1;transform:none}
+.final-text.show > :nth-child(2){transition-delay:1.6s}
+.final-text.show > :nth-child(3){transition-delay:3s}
+.f-mission{font-size:clamp(20px,4.6vw,26px);line-height:1.25;color:var(--pink-l)}
+.f-love{font-family:var(--px);font-size:clamp(8px,2.3vw,12px);line-height:1.9;color:#fff;text-shadow:0 0 14px var(--pink)}
+.final-text:not(.show) #replayBtn{pointer-events:none}
